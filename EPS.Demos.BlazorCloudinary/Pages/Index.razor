@@ -1,0 +1,78 @@
+﻿@page "/"
+@using EPS.Demos.BlazorCloudinary.Models
+@using Microsoft.Extensions.Configuration
+@using Newtonsoft.Json
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+@inject Cloudinary cloudinary
+@inject IConfiguration config
+<h1>Cloudinary demo</h1>
+
+Upload a file using the widget, and show the image in the display below.
+
+<div class="row">
+    <div class="col-1">
+        <button class="btn-lg" @onclick="LoadFile">Upload Image</button>
+    </div>
+</div>
+
+@if (SuccessEvent is not null)
+{
+    <div class="row">
+        @imgString
+    </div>
+}
+
+@code {
+    private IJSObjectReference module;
+    private SuccessEvent SuccessEvent { get; set; }
+    private MarkupString imgString;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            module = await JS.InvokeAsync<IJSObjectReference>("import",
+                "./js/imgHandler.js");
+
+            var preset = config["preset"];
+            var handle = config["handle"];
+            module.InvokeVoidAsync("setupBarberUploadWidget",preset,handle,
+                DotNetObjectReference.Create(this),"UploadComplete").ConfigureAwait(false);
+        }
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+
+    /*
+     * var widget = cloudinary.createUploadWidget({
+        cloudName: "my-cloud-name", uploadPreset: "preset1" }, (error, result) => { });
+        widget.open();
+     */
+    public async ValueTask DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+    }
+
+    private async Task LoadFile()
+    {
+        Console.WriteLine("invoking LoadFile");
+        //var widget = module.InvokeAsync<IJSObjectReference>("cloudinary.createUploadWidget", "{cloudName: \"barber-shop\",uploadPreset: \"dfmbhmnv\"}");
+        //var result = widget.Result.InvokeAsync<string>("open");
+        //Console.WriteLine(result.Result);
+        //,"dfmbhmnv","barber-sample"
+        await module.InvokeVoidAsync("openWidget");
+        //Console.WriteLine(data);
+
+    }
+
+    [JSInvokable]
+    public void UploadComplete(string response)
+    {
+        Console.WriteLine(response);
+        SuccessEvent = JsonConvert.DeserializeObject<SuccessEvent>(response);
+        imgString = new MarkupString(cloudinary.Api.UrlImgUp.BuildImageTag(SuccessEvent.info.public_id));
+        StateHasChanged();
+    }
+}

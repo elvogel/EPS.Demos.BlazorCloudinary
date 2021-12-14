@@ -2,7 +2,6 @@
 @using EPS.Demos.BlazorCloudinary.Models
 @using Microsoft.Extensions.Configuration
 @using Newtonsoft.Json
-@implements IAsyncDisposable
 @inject IJSRuntime JS
 @inject Cloudinary cloudinary
 @inject IConfiguration config
@@ -27,8 +26,10 @@ Upload a file using the widget, and show the image in the display below.
     private IJSObjectReference module;
     private SuccessEvent SuccessEvent { get; set; }
     private MarkupString imgString;
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
             module = await JS.InvokeAsync<IJSObjectReference>("import",
@@ -36,34 +37,18 @@ Upload a file using the widget, and show the image in the display below.
 
             var preset = config["preset"];
             var handle = config["handle"];
-            module.InvokeVoidAsync("setupBarberUploadWidget",preset,handle,
+            var cloud = config["CloudinaryConfig:Cloud"];
+            await module.InvokeVoidAsync("setCloudinaryCloudName", cloud);
+            //pass in 
+            await module.InvokeVoidAsync("setupCloudinaryUploadWidget",preset,handle,
                 DotNetObjectReference.Create(this),"UploadComplete").ConfigureAwait(false);
-        }
-        //return base.OnAfterRenderAsync(firstRender);
-    }
-
-    /*
-     * var widget = cloudinary.createUploadWidget({
-        cloudName: "my-cloud-name", uploadPreset: "preset1" }, (error, result) => { });
-        widget.open();
-     */
-    public async ValueTask DisposeAsync()
-    {
-        if (module is not null)
-        {
-            await module.DisposeAsync();
         }
     }
 
     private async Task LoadFile()
     {
         Console.WriteLine("invoking LoadFile");
-        //var widget = module.InvokeAsync<IJSObjectReference>("cloudinary.createUploadWidget", "{cloudName: \"barber-shop\",uploadPreset: \"dfmbhmnv\"}");
-        //var result = widget.Result.InvokeAsync<string>("open");
-        //Console.WriteLine(result.Result);
-        //,"dfmbhmnv","barber-sample"
         await module.InvokeVoidAsync("openWidget");
-        //Console.WriteLine(data);
 
     }
 

@@ -1,12 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
       <UserSecretsId>92c4af98-7239-41ab-a165-8879b04a2bf5</UserSecretsId>
   </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="CloudinaryDotNet" Version="1.15.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="wwwroot\js\imgHandler.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\css\site.css">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\css\bootstrap\bootstrap.min.css">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\css\bootstrap\bootstrap.min.css.map">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.eot">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.otf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.svg">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\css\open-iconic\font\fonts\open-iconic.woff">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

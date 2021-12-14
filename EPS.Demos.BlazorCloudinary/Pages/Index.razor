@@ -39,9 +39,8 @@ Upload a file using the widget, and show the image in the display below.
             var handle = config["handle"];
             var cloud = config["CloudinaryConfig:Cloud"];
             await module.InvokeVoidAsync("setCloudinaryCloudName", cloud);
-            //pass in 
             await module.InvokeVoidAsync("setupCloudinaryUploadWidget",preset,handle,
-                DotNetObjectReference.Create(this),"UploadComplete").ConfigureAwait(false);
+                DotNetObjectReference.Create(this),"UploadComplete");
         }
     }
 

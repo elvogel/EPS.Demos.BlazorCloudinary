@@ -82,18 +82,24 @@ In the [OnAfterRenderAsync](https://docs.microsoft.com/en-us/aspnet/core/blazor/
 
 The code looks like this:
 ```c#
-if (firstRender)
+private IJSObjectReference module;
+protected override async Task OnAfterRenderAsync(bool firstRender)
 {
-    module = await JS.InvokeAsync<IJSObjectReference>("import",
-        "./js/imgHandler.js");
+    await base.OnAfterRenderAsync(firstRender);
 
-    var preset = config["preset"];
-    var handle = config["handle"];
-    var cloud = config["CloudinaryConfig:Cloud"];
-    await module.InvokeVoidAsync("setCloudinaryCloudName", cloud);
-    //pass in 
-    await module.InvokeVoidAsync("setupCloudinaryUploadWidget",preset,handle,
-        DotNetObjectReference.Create(this),"UploadComplete").ConfigureAwait(false);
+    if (firstRender)
+    {
+        module = await JS.InvokeAsync<IJSObjectReference>("import",
+            "./js/imgHandler.js");
+    
+        var preset = config["preset"];
+        var handle = config["handle"];
+        var cloud = config["CloudinaryConfig:Cloud"];
+        await module.InvokeVoidAsync("setCloudinaryCloudName", cloud);
+        //pass in 
+        await module.InvokeVoidAsync("setupCloudinaryUploadWidget",preset,handle,
+            DotNetObjectReference.Create(this),"UploadComplete").ConfigureAwait(false);
+    }
 }
 ```
 Our button in the UI code is wired to a method that invokes the `openWidget` method.

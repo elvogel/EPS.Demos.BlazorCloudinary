@@ -22,9 +22,16 @@ namespace EPS.Demos.BlazorCloudinary
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(new Cloudinary(new Account(
+                section["CloudinaryConfig:Cloud"],
+                section["CloudinaryConfig:APIKey"],
+                section["CloudinaryConfig:APISecret"]))
+                                  {Api = {Secure = true}});
+            /*
             services.AddSingleton(new CloudinaryDotNet.Cloudinary(new Account(Configuration["CloudinaryConfig:Cloud"],
                 Configuration["CloudinaryConfig:APIKey"],
                 Configuration["CloudinaryConfig:APISecret"])));
+            */
             services.AddSingleton(Configuration);
             services.AddRazorPages();
             services.AddServerSideBlazor();
